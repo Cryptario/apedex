@@ -1,5 +1,6 @@
 const isProduction = !location.href.includes('signet')
 const ordinalsExplorerUrl = isProduction ? "https://ordinals.com" : "https://explorer-signet.openordex.org"
+const ordinalsImagesUrl = "https://cdn.ordiscan.com/inscriptions\%2F"
 const baseMempoolUrl = isProduction ? "https://mempool.space" : "https://mempool.space/signet"
 const networkName = isProduction ? "mainnet" : "signet"
 const baseMempoolApiUrl = `${baseMempoolUrl}/api`
@@ -649,7 +650,7 @@ async function inscriptionPage() {
         span.textContent = dummyUtxoValue;
     }
 
-    document.getElementById('preview').src = `${ordinalsExplorerUrl}/preview/${inscriptionID}`;
+    document.getElementById('preview').src = `${ordinalsImagesUrl}${inscriptionID}`;
 
     document.getElementById('inscriptionId').value = inscription.id;
     document.getElementById('owner').value = inscription.address;
@@ -1100,7 +1101,7 @@ async function collectionPage() {
         document.getElementById('collectionName').textContent = collection.name
         document.title = collection.name
         document.getElementById('supply').textContent = `${collection.inscriptions.length}/${collection.supply}`
-        document.getElementById('collectionIcon').src = `${ordinalsExplorerUrl}/preview/${collection.inscription_icon}`
+        document.getElementById('collectionIcon').src = `${ordinalsImagesUrl}{collection.inscription_icon}`
         document.getElementById('collectionDescription').textContent = collection.description.replaceAll("\n", "<br>")
 
         if (collection.twitter_link) {
@@ -1131,7 +1132,7 @@ async function collectionPage() {
                     <div class="card-body" style="padding: 6px 7px 7px 7px" id="inscription_${inscription.id}">
                         <iframe style="pointer-events: none" sandbox=allow-scripts
                             scrolling=no loading=lazy
-                            src="${ordinalsExplorerUrl}/preview/${inscription.id.replaceAll('"', '')}"></iframe>
+                            src="${ordinalsImagesUrl}${inscription.id.replaceAll('"', '')}"></iframe>
                     </div>
                 </div>`
             inscriptionsContainer.appendChild(inscriptionElement)
@@ -1173,7 +1174,7 @@ function displayCollections(displayedCollections) {
                 <div class="card-body" style="padding: 6px 7px 7px 7px">
                     <iframe style="pointer-events: none" sandbox=allow-scripts
                         scrolling=no loading=lazy
-                        src="${ordinalsExplorerUrl}/preview/${collection.inscription_icon?.replaceAll('"', '')}"></iframe>
+                        src="${ordinalsImagesUrl}${collection.inscription_icon?.replaceAll('"', '')}"></iframe>
                 </div>
             </div>`
         collectionsContainer.appendChild(collectionElement)
@@ -1219,7 +1220,7 @@ async function loadLatestOrders(limit = 8, nostrLimit = 25) {
                     <div class="card-body" style="padding: 6px 7px 7px 7px">
                         <iframe style="pointer-events: none" sandbox=allow-scripts
                             scrolling=no loading=lazy
-                            src="${ordinalsExplorerUrl}/preview/${order.inscriptionId}"></iframe>
+                            src="${ordinalsImagesUrl}${order.inscriptionId}"></iframe>
                         <button class="btn btn-block btn-primary mt-2" style="max-width:185px; max-height: revert">${sanitizeHTML(order.title)}</button>
                     </div>
                 </div>`
