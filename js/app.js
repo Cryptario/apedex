@@ -60,7 +60,7 @@ let updatePayerAddress
 let generateDummyUtxos
 let generatePSBTGeneratingDummyUtxos
 let btnBuyInscriptionNow
-
+let collection;
 
 async function selectUtxos(utxos, amount, vins, vouts, recommendedFeeRate) {
     const selectedUtxos = []
@@ -374,8 +374,12 @@ async function* getLatestOrders(limit, nostrLimit = 20, filters = {}) {
             if (latestOrders.find(x => x.inscriptionId == inscriptionId)) {
                 continue
             }
+            const ApeinscriptionIds = [];
+            for (let i = 0; i < collection.inscriptions.length; i++) {
+              const ApeinscriptionId = collection.inscriptions[i].id;
+              if (inscriptionId === ApeinscriptionId) {
 
-
+             
             const inscriptionData = inscriptionDataCache[inscriptionId] || await getInscriptionDataById(inscriptionId)
             inscriptionDataCache[inscriptionId] = inscriptionData
             const validatedPrice = validateSellerPSBTAndExtractPrice(order.content, inscriptionData.output)
@@ -394,6 +398,7 @@ async function* getLatestOrders(limit, nostrLimit = 20, filters = {}) {
             if (latestOrders.length >= limit) {
                 break
             }
+        }}
         } catch (e) {
             console.error(e)
         }
@@ -1090,187 +1095,15 @@ See transaction details on <a href="${baseMempoolUrl}/tx/${txId}" target="_blank
     }
 }
 
-async function collectionPage() {
-    try {
-        let collection
-        try {
-            collection = await getCollection(collectionSlug)
-        } catch {
-            throw new Error(`Collection ${collectionSlug} not found`)
-        }
 
-        document.getElementById('collectionName').textContent = collection.name
-        document.title = collection.name
-        document.getElementById('supply').textContent = `${collection.inscriptions.length}/${collection.supply}`
-        document.getElementById('collectionIcon').src = `${ordinalsImagesUrl}${collection.inscription_icon}`
-        document.getElementById('collectionDescription').textContent = collection.description.replaceAll("\n", "<br>")
-
-        if (collection.twitter_link) {
-            document.getElementById('twitter').href = collection.twitter_link
-            document.getElementById('twitter').style.display = 'revert'
-        }
-        if (collection.discord_link) {
-            document.getElementById('discord').href = collection.discord_link
-            document.getElementById('discord').style.display = 'revert'
-        }
-        if (collection.website_link) {
-            document.getElementById('website').href = collection.website_link
-            document.getElementById('website').style.display = 'revert'
-        }
-
-        const inscriptionsContainer = document.getElementById('inscriptionsContainer')
-
-       // for (const inscription of collection.inscriptions) {
-       //     const inscriptionElement = document.createElement('a')
-       //    inscriptionElement.href = `/inscription.html?number=${inscription.id}`
-       //     inscriptionElement.target = `_blank`
-       //     inscriptionElement.className = `collectionLink`
-       //     inscriptionElement.innerHTML = `
-       //         <div class="card card-tertiary w-100 fmxw-300">
-        //            <div class="card-header text-center">
-        //                <span id="inscriptionName">${sanitizeHTML(inscription.meta.name)}</span>
-        //            </div>
-        //            <div class="card-body" style="padding: 6px 7px 7px 7px" id="inscription_${inscription.id}">
-         //               <img style="pointer-events: none" sandbox=allow-scripts
-        //                    scrolling=no loading=lazy
-        //                    src="${ordinalsImagesUrl}${inscription.id.replaceAll('"', '')}"></img>
-          //          </div>
-         //       </div>`
-         //   inscriptionsContainer.appendChild(inscriptionElement)
-       // }
-
-        const orders = getLatestOrders(100, 200)
-            //{ "#i": collection.inscriptions.map(x => x.id) })
-
-
-
-
-
-        for await (const order of orders) {
-           
-                const inscriptionIds = [];
-                for (let i = 0; i < collection.inscriptions.length; i++) {
-                  const inscriptionId = collection.inscriptions[i].id;
-                  if (order.inscriptionId === inscriptionId) {
-                    const orderElement = document.createElement('a')
-            orderElement.href = `/inscription.html?number=${order.inscriptionId}`
-            orderElement.target = `_blank`
-            orderElement.innerHTML = `
-                <div class="card card-tertiary w-100 fmxw-300">
-                    <div class="card-header text-center">
-                        <span>Inscription #${order.number}</span>
-                    </div>
-                    <div class="card-body" style="padding: 6px 7px 7px 7px">
-                        <img style="pointer-events: none" sandbox=allow-scripts class="img-fluid"
-                            scrolling=no loading=lazy
-                            src="${ordinalsImagesUrl}${order.inscriptionId}"></img>
-                        <button class="btn btn-block btn-primary mt-2" style="max-width:185px; max-height: revert">${sanitizeHTML(order.title)}</button>
-                    </div>
-                </div>`
-            inscriptionsContainer.appendChild(orderElement)
-
-
-
-                  }
-                
-            
-             
-            
-            }
-        }
-
-        
-    } catch (e) {
-        console.error(e)
-        alert(`Error fetching collection ${collectionSlug}:\n` + e.message)
-    } finally {
-        document.getElementById('listingsLoading').style.display = 'none'
-    }
-}
-
-function displayCollections(displayedCollections) {
-    const collectionsContainer = document.getElementById('collectionsContainer')
-    collectionsContainer.innerHTML = ''
-
-    for (const collection of displayedCollections) {
-        const collectionElement = document.createElement('a')
-        collectionElement.href = `/collection.html?slug=${collection.slug}`
-        collectionElement.target = `_blank`
-        collectionElement.innerHTML = `
-            <div class="card card-tertiary w-100 fmxw-300">
-                <div class="card-header text-center">
-                    <span>${sanitizeHTML(collection.name)}</span>
-                </div>
-                <div class="card-body" style="padding: 6px 7px 7px 7px">
-                    <img style="pointer-events: none" sandbox=allow-scripts
-                        scrolling=no loading=lazy
-                        src="${ordinalsImagesUrl}${collection.inscription_icon?.replaceAll('"', '')}"></img>
-                </div>
-            </div>`
-        collectionsContainer.appendChild(collectionElement)
-    }
-}
-
-function searchCollections(searchTerm) {
-    displayCollections(window.allCollections.filter(x => x.name.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 12))
-}
-
-async function loadCollections(limit, featuredCollections = []) {
-    try {
-        window.allCollections = await getCollections()
-
-        let displayedCollections = allCollections.slice(0, limit || 999999)
-        displayedCollections = featuredCollections.concat(displayedCollections.slice(featuredCollections.length))
-            .sort((a, b) => 0.5 - Math.random())
-
-
-        displayCollections(displayedCollections)
-    } catch (e) {
-        console.error(e)
-        console.error(`Error fetching collections:\n` + e.message)
-    }
-}
-
-async function loadLatestOrders(limit = 8, nostrLimit = 25) {
-    try {
-        const orders = getLatestOrders(limit, nostrLimit)
-
-        const ordersContainer = document.getElementById('ordersContainer')
-        ordersContainer.innerHTML = ''
-
-        for await (const order of orders) {
-            const orderElement = document.createElement('a')
-            orderElement.href = `/inscription.html?number=${order.inscriptionId}`
-            orderElement.target = `_blank`
-            orderElement.innerHTML = `
-                <div class="card card-tertiary w-100 fmxw-300">
-                    <div class="card-header text-center">
-                        <span>Inscription #${order.number}</span>
-                    </div>
-                    <div class="card-body" style="padding: 6px 7px 7px 7px">
-                        <img style="pointer-events: none" sandbox=allow-scripts
-                            scrolling=no loading=lazy
-                            src="${ordinalsImagesUrl}${order.inscriptionId}"></img>
-                        <button class="btn btn-block btn-primary mt-2" style="max-width:185px; max-height: revert">${sanitizeHTML(order.title)}</button>
-                    </div>
-                </div>`
-            ordersContainer.appendChild(orderElement)
-        }
-    } catch (e) {
-        console.error(e)
-        console.error(`Error fetching orders:\n` + e.message)
-    }
-}
 
 async function homePage() {
   
-
     await modulesInitializedPromise
  
-    
-  
+
         try {
-            let collection
+            
             try {
                 collection = await getCollection("bitcoin-apes")
             } catch {
@@ -1298,86 +1131,33 @@ async function homePage() {
     
             const inscriptionsContainer = document.getElementById('inscriptionsContainer')
     
-           // for (const inscription of collection.inscriptions) {
-           //     const inscriptionElement = document.createElement('a')
-           //    inscriptionElement.href = `/inscription.html?number=${inscription.id}`
-           //     inscriptionElement.target = `_blank`
-           //     inscriptionElement.className = `collectionLink`
-           //     inscriptionElement.innerHTML = `
-           //         <div class="card card-tertiary w-100 fmxw-300">
-            //            <div class="card-header text-center">
-            //                <span id="inscriptionName">${sanitizeHTML(inscription.meta.name)}</span>
-            //            </div>
-            //            <div class="card-body" style="padding: 6px 7px 7px 7px" id="inscription_${inscription.id}">
-             //               <img style="pointer-events: none" sandbox=allow-scripts
-            //                    scrolling=no loading=lazy
-            //                    src="${ordinalsImagesUrl}${inscription.id.replaceAll('"', '')}"></img>
-              //          </div>
-             //       </div>`
-             //   inscriptionsContainer.appendChild(inscriptionElement)
-           // }
-    
-            const orders = getLatestOrders(100, 200)
-                //{ "#i": collection.inscriptions.map(x => x.id) })
-    
-    
-    
-    
-    
+            const orders = getLatestOrders(300, 600)
             for await (const order of orders) {
-               
-                    const inscriptionIds = [];
-                    for (let i = 0; i < collection.inscriptions.length; i++) {
-                      const inscriptionId = collection.inscriptions[i].id;
-                      if (order.inscriptionId === inscriptionId) {
-                        const orderElement = document.createElement('a')
+                const orderElement = document.createElement('a')
                 orderElement.href = `/inscription.html?number=${order.inscriptionId}`
                 orderElement.target = `_blank`
                 orderElement.innerHTML = `
-                    <div class="card">
-                        <div class="card-header text-center">
+                    <div class="card apes-card">
+                        <div class="card-header text-center apes-card">
                             <span>Inscription #${order.number}</span>
                         </div>
                         <div class="card-body" style="padding: 6px 7px 7px 7px">
-                            <img style="pointer-events: none" sandbox=allow-scripts class="img-fluid img-max"
+                            <img style="pointer-events: none" sandbox=allow-scripts class="img-fluid apes-card"
                                 scrolling=no loading=lazy
                                 src="${ordinalsImagesUrl}${order.inscriptionId}"></img>
-                            <button class="btn btn-block btn-primary mt-2 align-self-end" style="max-width:360px; max-height: revert">${sanitizeHTML(order.title)}</button>
+                            <button class="btn btn-block btn-primary mt-2 align-self-end apes-card" style="max-width:360px; max-height: revert">${sanitizeHTML(order.title)}</button>
                         </div>
                     </div>`
-                inscriptionsContainer.appendChild(orderElement)
-    
-    
-    
-                      }
-                    
-                
-                 
-                
-                }
-            }
-    
-            
+                inscriptionsContainer.appendChild(orderElement)   
+             }
         } catch (e) {
             console.error(e)
             alert(`Error fetching collection ${collectionSlug}:\n` + e.message)
         } finally {
             document.getElementById('listingsLoading').style.display = 'none'
+            
         }
     }
-
-
-
-
-async function collectionsPage() {
-    await modulesInitializedPromise
-    loadCollections()
-}
-
-async function listingsPage() {
-    await modulesInitializedPromise
-    loadLatestOrders(100, 200)
-}
 
 window.onload = main()
 

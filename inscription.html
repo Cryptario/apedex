@@ -34,35 +34,70 @@
     <!-- Bootstrap CSS -->
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Site CSS -->
-    <link type="text/css" rel="stylesheet" href="css/w95.css">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGT03XEJ4W"></script>
-    <script>   window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-PGT03XEJ4W'); </script>
-</head>
+     <style>
+    .apes-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height:100%
+        justify-content: space-between;
+        background-color: #2e2e2e;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: #fff;
+      }
+      
+      .apes-card img {
+        
+        height: 250px;
+      }
+      
+      .apes-card h3 {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+      }
+      
+      .apes-card p {
+        font-size: 0.9rem;
+        line-height: 1.2;
+        text-align: center;
+      }
+      
+      .apes-card button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      
+      .apes-card button:hover {
+        background-color: #0069d9;
+      }
+    </style>
+    </head>
 
 <body>
-    <header class="header-global">
-        <nav id="navbar-main"
-            class="navbar d-flex flex-row align-items-center navbar-main navbar-expand-lg navbar-dark justify-content-between">
-            <ul class="navbar-nav navbar-nav-hover flex-row align-items-center">
-                <li class="nav-item">
-                    <a href="/" class="nav-link" role="button">
-                        <span class="nav-link-inner-text">OpenOrdex <span id="networkName"></span></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://github.com/orenyomtov/openordex" target="_blank" class="nav-link" role="button">
-                        <span class="nav-link-inner-text">GitHub</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://twitter.com/openordex" target="_blank" class="nav-link" role="button">
-                        <span class="nav-link-inner-text">Twitter</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="time text-center">
-                <span id="time" class="text-uppercase"></span>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    ApeDex <span id="networkName"></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <form class="d-flex mt-3 mt-lg-0 ms-lg-3" action="inscription.html" method="GET">
+                        <input class="form-control me-2" type="search" placeholder="Inscription or ID num"
+                            aria-label="Search" name="number" required>
+                        <button class="btn btn-outline-blue" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </nav>
     </header>
@@ -72,13 +107,13 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="card card-tertiary w-100 fmxw-500">
+                        <div class="card card-tertiary w-100 fmxw-500 apes-card">
                             <div class="card-header text-center">
                                 <span>Inscription #<span class="inscriptionNumber"></span></span>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body apes-card">
                                 <form action="#" class="mt-0" onsubmit="listInscriptionForSale(); return false;">
-                                    <img id="preview" sandbox=allow-scripts scrolling=no loading=lazy></img>
+                                    <img id="preview" sandbox=allow-scripts scrolling=no loading=lazy class="apes-card"></img>
 
                                     <!-- Form -->
                                     <div class="form-group">
