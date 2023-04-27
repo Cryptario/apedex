@@ -39,6 +39,12 @@
   grid-gap: 1rem;
 }
 
+@media (max-width: 767px) {
+  .apes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .apes-card {
   display: flex;
   flex-direction: column;
@@ -99,32 +105,58 @@
         width:100%;
       }
       
+      @media (max-width: 991px) {
+    .navbar-collapse .collapse-content {
+        display: none;
+    }
+}
     </style>
     <!-- Site CSS -->
 
-    <script>   window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-PGT03XEJ4W'); </script>
-</head>
+ </head>
 
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="/">
-                    ApeDex <span id="networkName"></span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <form class="d-flex mt-3 mt-lg-0 ms-lg-3" action="inscription.html" method="GET">
-                        <input class="form-control me-2" type="search" placeholder="Inscription or ID num"
-                            aria-label="Search" name="number" required>
-                        <button class="btn btn-outline-blue" type="submit">Search</button>
+              <a class="navbar-brand" href="/">
+                ApeDex <span id="networkName"></span>
+              </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-lg-center">
+                  <li class="nav-item">
+                    <form class="d-none d-lg-flex mt-3 mt-lg-0 ms-lg-3" action="inscription.html" method="GET">
+                      <input class="form-control me-2" type="search" placeholder="Inscription or ID num"
+                        aria-label="Search" name="number" required>
+                      <button class="btn btn-outline-blue" type="submit">Search</button>
                     </form>
-                </div>
+                  </li>
+                  <li class="nav-item d-flex d-lg-none">
+                    <button class="btn btn-outline-blue" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#searchCollapse" aria-controls="searchCollapse" aria-expanded="false"
+                      aria-label="Toggle search">
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <div class="collapse navbar-collapse show" id="searchCollapse">
+                      <form class="d-lg-none" action="inscription.html" method="GET">
+                        <div class="input-group my-3" id="searchCollapse">
+                          <input class="form-control" type="search" placeholder="Inscription or ID num" aria-label="Search"
+                            name="number" required>
+                          <button class="btn btn-outline-blue" type="submit">Search</button>
+                        </div>
+                      </form>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
-        </nav>
+          </nav>
     </header>
     
     <main>
@@ -201,6 +233,8 @@
             </div>
         </section>
     </main>
+
+    
     <script src="js/secp256k1.js"></script>
     <script type="module" src="js/bitcoinjs-lib.js"></script>
     <script type="module" src="js/connectjs-lib.js"></script>
